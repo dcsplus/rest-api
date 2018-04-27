@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Dynapack hotel async search demo</title>
+
+    <!-- Bootstrap -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- local style -->
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body onload="">
+
+
+
+  <!-- listing container -->
+  <div class="container">
+
+    <div class="row">
+      <h1>
+        Dynapack demo for async hotel search
+      </h1>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      
+      <div class="alert alert-info" role="alert">City and id correlation<br>London: 1356 | Paris: 3 | Berlin: 4 | Bucharest:  185 </div>
+
+    </div>
+    <div class="row">
+       
+      <!-- search form -->
+      <form class="form-horizontal" id="search">
+
+        <div class="form-group">
+          <label for="cityId" class="col-sm-2 control-label">City id: <br> <span id="cityName" class="label label-info">London</span></label>
+
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="cityId" name="_s[dyno_container][h][0][cityId]" value="1356">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dateIn" class="col-sm-2 control-label">Check-in date:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="dateIn" name="_s[dyno_container][h][0][dIn]" value="2018-03-14">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dateOut" class="col-sm-2 control-label">Check-out date:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="dateOut" name="_s[dyno_container][h][0][dOut]" value="2018-03-21">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adt" class="col-sm-2 control-label">Number of adults:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="adt" name="_s[dyno_container][h][0][r][0][adt]" value="2">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button id="searchBtn" type="button" class="btn btn-default">Search</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+    
+    <div class="row">
+      <!-- title -->
+      <h1 class="text-center">Hotel list</h1>
+
+      <!-- progress bar -->
+      <div id="progress-bar" class="progress progress-striped active" style="display: none;">
+        <div class="progress-bar" id="progress-bar-status" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+          <span id="progress-bar-status-label">0</span>% Completed
+        </div>
+      </div>
+      
+      <!-- loader -->
+      <div id="loader" class="container" style="display: none;">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="loader">
+                      <p>Loading...</p>
+                      <div class="loader-inner"></div>
+                      <div class="loader-inner"></div>
+                      <div class="loader-inner"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- hotel list -->
+      <div id="list" class="list-group">
+        
+
+        <!-- placeholder for hotels -->
+        
+      </div>
+
+    </div>
+</div>
+
+
+<!-- hotel item template -->
+<script id="hotel-tpl" type="html/template">
+  <a href="#" class="list-group-item">
+        <div class="media col-md-3">
+            <figure class="pull-left">
+                <img src="http://trippublic.dcsplus.net/dynapack/clients/demo/public/image.php?id=<%= Id %>" class="img-rounded" alt="<%= Name %>" width="200" height="150">
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <h4 class="list-group-item-heading"> <%= Name %> </h4>
+            <p class="list-group-item-text"> 
+            Address: <%= Address %> <br>
+            Coordinates: <%= Lat %> latitude, <%= Lng %> longitude
+            </p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h2> <%= MinPrice %> <small> <%= Currency %> </small></h2>
+            <button type="button" class="btn btn-primary btn-lg btn-block">Book Now!</button>
+            <div class="stars">
+                <span class="glyphicon glyphicon-star"></span>
+                <span class="glyphicon glyphicon-star"></span>
+                <span class="glyphicon glyphicon-star"></span>
+                <span class="glyphicon glyphicon-star"></span>
+                <span class="glyphicon glyphicon-star-empty"></span>
+            </div>
+        </div>
+  </a>
+</script>
+  
+
+    
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/url.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/http.js"></script>
+    <script src="js/listing.js"></script>
+    <script type="text/javascript">
+      // cities object
+      var cities = {3 : "Paris",1356 : "London" ,4: "Berlin" ,185 : "Bucharest" };
+      
+      // bind on change event on city id input to change city name
+      $("#cityId").change(function(){
+        var cityId = $("#cityId").val();
+        if( cities[cityId] != undefined ){
+          $("#cityName").html(cities[cityId]);
+        }else{
+          $("#cityName").html("Invalid city");
+        }
+      });
+
+
+      // bind on click event on search button
+      $("#searchBtn").click(function(){app.search()});
+
+
+
+    </script>
+  </body>
+</html>
